@@ -2,7 +2,7 @@
 
 A web application to manage student records efficiently, built for the Auspify Technologies internship (Task 1, Easy).
 
-**Live demo:** _add your Vercel link here_
+**Live demo:** (https://student-management-system-three-xi.vercel.app/)
 
 ## Features
 - **Add** student records with validation (name, roll number, email, course, age) and duplicate roll-number detection
