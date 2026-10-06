@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Student Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f6fc;--card:#fff;--ink:#0f1b3d;--mute:#5d6b8a;--line:#dbe4f2;--blue:#2563eb;--orange:#ff7a1a;--red:#d92d3f;--green:#12a150;--chip:#e8f0ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1226;--card:#121c38;--ink:#e9eefb;--mute:#9aa9c9;--line:#25335a;--blue:#5b8cff;--chip:#1b2a52;--red:#ff6b7a}}
+:root[data-theme="dark"]{--bg:#0a1226;--card:#121c38;--ink:#e9eefb;--mute:#9aa9c9;--line:#25335a;--blue:#5b8cff;--chip:#1b2a52;--red:#ff6b7a}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,sans-serif;line-height:1.5;min-height:100%}
+h1,h2,.num{font-family:Sora,system-ui,sans-serif}
+.hero{background:linear-gradient(120deg,#0f1b3d 0%,#1d3fa8 60%,#ff7a1a 130%);color:#fff;padding:34px 16px 90px}
+.in{max-width:1080px;margin:0 auto}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+h1{font-size:clamp(1.6rem,4vw,2.5rem);margin:0 0 6px;font-weight:800;letter-spacing:-.02em}
+.hero p{margin:0;opacity:.85;max-width:520px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:10px 18px;cursor:pointer;background:var(--orange);color:#fff;transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.btn.alt{background:var(--chip);color:var(--blue)}
+.btn.danger{background:var(--red)}
+.btn.ghost{background:rgba(255,255,255,.16);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+main{max-width:1080px;margin:-60px auto 0;padding:0 16px 48px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(15,27,61,.08)}
+.stat .num{font-size:1.9rem;font-weight:800;line-height:1.1}
+.stat span{color:var(--mute);font-size:.9rem}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+h2{font-size:1.05rem;margin:0 0 12px}
+.bar{display:grid;grid-template-columns:130px 1fr 24px;gap:8px;align-items:center;font-size:.88rem;margin:6px 0}
+.track{background:var(--chip);border-radius:6px;height:10px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--orange));border-radius:6px;transition:width .5s}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 12px}
+input,select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:100%}
+.tools input{flex:2 1 200px;width:auto}.tools select{flex:1 1 140px;width:auto}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line)}
+th{font-size:.85rem;color:var(--mute);font-weight:600}
+tr:last-child td{border-bottom:0}
+.who{display:flex;align-items:center;gap:10px}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-family:Sora,sans-serif;font-size:.85rem;flex:none}
+.tag{background:var(--chip);color:var(--blue);padding:3px 10px;border-radius:99px;font-size:.82rem;white-space:nowrap}
+.sm{font:inherit;font-size:.85rem;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.sm.d{color:var(--red);border-color:var(--red)}
+.empty{text-align:center;color:var(--mute);padding:36px 0}
+.ov{position:fixed;inset:0;background:rgba(6,12,30,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.ov.on{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:22px;width:100%;max-width:440px;max-height:92vh;overflow:auto;animation:pop .18s}
+@keyframes pop{from{transform:scale(.95);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+label{display:block;font-size:.85rem;color:var(--mute);margin:12px 0 4px}
+.fe{color:var(--red);font-size:.85rem;min-height:1.2em;margin-top:8px}
+.acts{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;transition:transform .25s;z-index:20}
+#toast.on{transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<header class="hero"><div class="in top">
+  <div><h1>Student Management System</h1><p>Create, update, delete and browse student records, stored in a database. <b id="mode"></b></p></div>
+  <div style="display:flex;gap:8px"><button class="btn ghost" id="theme">Dark mode</button><button class="btn" id="add">Add student</button></div>
+</div></header>
+<main>
+  <section class="stats" aria-label="Summary">
+    <div class="card stat"><div class="num" id="sTotal">0</div><span>Total students</span></div>
+    <div class="card stat"><div class="num" id="sCourses">0</div><span>Courses in use</span></div>
+    <div class="card stat"><div class="num" id="sAge">0</div><span>Average age</span></div>
+    <div class="card stat"><div class="num" id="sNew" style="font-size:1.15rem;padding:6px 0">-</div><span>Latest addition</span></div>
+  </section>
+  <section class="two">
+    <div class="card"><div class="tools" style="margin:0 0 10px"><input id="q" placeholder="Search name, roll, email or course" aria-label="Search students"><select id="fc" aria-label="Filter by course"></select><select id="so" aria-label="Sort"><option value="new">Newest first</option><option value="name">Name A to Z</option><option value="roll">Roll number</option><option value="age">Age</option></select></div>
+      <div class="scroll"><table><thead><tr><th>Student</th><th>Roll</th><th>Course</th><th>Age</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+      <div class="acts" style="justify-content:space-between;align-items:center"><span id="shown" style="color:var(--mute);font-size:.9rem"></span><button class="btn alt" id="csv">Export CSV</button></div>
+    </div>
+    <div class="card"><h2>Students by course</h2><div id="chart"></div></div>
+  </section>
+</main>
+
+<div class="ov" id="fm"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="ft">
+  <h2 id="ft">Add student</h2>
+  <label for="name">Full name</label><input id="name" autocomplete="off">
+  <label for="roll">Roll number</label><input id="roll" autocomplete="off">
+  <label for="email">Email</label><input id="email" type="email" autocomplete="off">
+  <label for="course">Course</label><select id="course"></select>
+  <div id="cw" style="display:none"><label for="custom">Course name</label><input id="custom" placeholder="e.g. Artificial Intelligence" autocomplete="off"></div>
+  <label for="age">Age</label><input id="age" type="number" min="1" max="100">
+  <div class="fe" id="fe" role="alert"></div>
+  <div class="acts"><button class="btn alt" id="fx">Cancel</button><button class="btn" id="fs">Add student</button></div>
+</div></div>
+
+<div class="ov" id="dm"><div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="dt">
+  <h2 id="dt">Delete this student?</h2><p id="dp" style="color:var(--mute)"></p>
+  <div class="acts"><button class="btn alt" id="dx">Keep student</button><button class="btn danger" id="dy">Delete student</button></div>
+</div></div>
+<div id="toast" role="status"></div>
+
+<script>
+const COURSES=["Computer Science","Electronics","Mechanical","Civil","Business","Data Science"];
+const COLORS=["#2563eb","#ff7a1a","#12a150","#8b5cf6","#e11d74","#0891b2"];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- Database layer: IndexedDB with localStorage / memory fallback ---------- */
+const DB={idb:null,api:false,mem:[],mode:"memory",
+  async call(url,opt){
+    const r=await fetch(url,{cache:"no-store",...opt});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.error||"Request failed");
+    return d;
+  },
+  async init(){
+    try{
+      const r=await fetch("/api/students",{cache:"no-store"});
+      if(r.ok){const d=await r.json();if(Array.isArray(d)){this.api=true;this.mode="shared";return}}
+    }catch(e){}
+    try{
+      this.idb=await new Promise((ok,no)=>{const r=indexedDB.open("auspify-sms",1);
+        r.onupgradeneeded=()=>r.result.createObjectStore("students",{keyPath:"id"});
+        r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error);r.onblocked=()=>no(new Error("blocked"))});
+      this.mode="indexeddb";
+    }catch(e){
+      try{this.mem=JSON.parse(localStorage.getItem("sms-fallback")||"[]");this.mode="localstorage"}catch(_){this.mem=[]}
+    }
+  },
+  save(){if(this.mode==="localstorage")try{localStorage.setItem("sms-fallback",JSON.stringify(this.mem))}catch(e){}},
+  req(store,mode,fn){return new Promise((ok,no)=>{const t=this.idb.transaction("students",mode);const r=fn(t.objectStore("students"));t.oncomplete=()=>ok(r&&r.result);t.onerror=()=>no(t.error)})},
+  async all(){if(this.api)return this.call("/api/students");return this.idb?await this.req(0,"readonly",s=>s.getAll()):[...this.mem]},
+  async put(o){if(this.api)return this.call("/api/students",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(o)});if(this.idb)return this.req(0,"readwrite",s=>s.put(o));this.mem=this.mem.filter(x=>x.id!==o.id).concat(o);this.save()},
+  async del(id){if(this.api)return this.call("/api/students?id="+id,{method:"DELETE"});if(this.idb)return this.req(0,"readwrite",s=>s.delete(id));this.mem=this.mem.filter(x=>x.id!==id);this.save()}
+};
+
+let students=[],editId=null,delId=null;
+const seed=[["Asha Reddy","CS101","asha@example.com","Computer Science",20],["Ravi Kumar","EC102","ravi@example.com","Electronics",21],["Meera Nair","DS103","meera@example.com","Data Science",19],["Karthik Rao","ME104","karthik@example.com","Mechanical",22],["Sneha Das","BU105","sneha@example.com","Business",20]];
+
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200)}
+function initials(n){return n.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+function color(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%COLORS.length;return COLORS[h]}
+
+const allCourses=()=>[...COURSES,...new Set(students.map(s=>s.course).filter(c=>!COURSES.includes(c)))];
+function syncFilter(){
+  const f=$("fc"),cur=f.value;
+  f.innerHTML='<option value="">All courses</option>'+allCourses().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  f.value=allCourses().includes(cur)?cur:"";
+}
+function render(){
+  syncFilter();
+  const q=$("q").value.trim().toLowerCase(),fc=$("fc").value,so=$("so").value;
+  let l=students.filter(s=>(!fc||s.course===fc)&&[s.name,s.roll,s.email,s.course].some(v=>v.toLowerCase().includes(q)));
+  l.sort((a,b)=>so==="name"?a.name.localeCompare(b.name):so==="roll"?a.roll.localeCompare(b.roll):so==="age"?a.age-b.age:b.id-a.id);
+  $("rows").innerHTML=l.length?l.map(s=>`<tr><td><div class="who"><div class="av" style="background:${color(s.name)}">${esc(initials(s.name))}</div><div><strong>${esc(s.name)}</strong><br><span style="color:var(--mute);font-size:.85rem">${esc(s.email)}</span></div></div></td><td>${esc(s.roll)}</td><td><span class="tag">${esc(s.course)}</span></td><td>${s.age}</td><td style="white-space:nowrap"><button class="sm" data-e="${s.id}">Edit</button> <button class="sm d" data-d="${s.id}">Delete</button></td></tr>`).join(""):`<tr><td colspan="5" class="empty">No students match. Add a student or clear the filters.</td></tr>`;
+  $("shown").textContent=`Showing ${l.length} of ${students.length}`;
+  const used=[...new Set(students.map(s=>s.course))];
+  $("sTotal").textContent=students.length;$("sCourses").textContent=used.length;
+  $("sAge").textContent=students.length?(students.reduce((a,s)=>a+s.age,0)/students.length).toFixed(1):"0";
+  $("sNew").textContent=students.length?[...students].sort((a,b)=>b.id-a.id)[0].name:"-";
+  const list=allCourses().filter(c=>COURSES.includes(c)||students.some(s=>s.course===c));const max=Math.max(1,...list.map(c=>students.filter(s=>s.course===c).length));
+  $("chart").innerHTML=list.map(c=>{const n=students.filter(s=>s.course===c).length;return `<div class="bar"><span>${esc(c)}</span><div class="track"><div class="fill" style="width:${n/max*100}%"></div></div><b>${n}</b></div>`}).join("");
+}
+async function reload(){students=await DB.all();render()}
+
+function openForm(s){
+  editId=s?s.id:null;$("ft").textContent=s?"Update student":"Add student";$("fs").textContent=s?"Save changes":"Add student";
+  $("name").value=s?s.name:"";$("roll").value=s?s.roll:"";$("email").value=s?s.email:"";const known=!s||COURSES.includes(s.course);$("course").value=known?(s?s.course:COURSES[0]):"Other";$("custom").value=known?"":s.course;toggleCustom();$("age").value=s?s.age:"";$("fe").textContent="";
+  $("fm").classList.add("on");$("name").focus();
+}
+const toggleCustom=()=>{const o=$("course").value==="Other";$("cw").style.display=o?"block":"none";if(o)$("custom").focus()};
+$("course").onchange=toggleCustom;
+const closeAll=()=>{$("fm").classList.remove("on");$("dm").classList.remove("on")};
+
+$("add").onclick=()=>openForm();
+$("fx").onclick=closeAll;$("dx").onclick=closeAll;
+$("fm").onclick=e=>{if(e.target.id==="fm")closeAll()};$("dm").onclick=e=>{if(e.target.id==="dm")closeAll()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll()});
+
+$("fs").onclick=async()=>{
+  const d={name:$("name").value.trim(),roll:$("roll").value.trim(),email:$("email").value.trim(),course:$("course").value==="Other"?$("custom").value.trim().replace(/\s+/g," "):$("course").value,age:parseInt($("age").value,10)};
+  let e="";
+  if(!d.name)e="Enter the student's full name.";
+  else if(!d.roll)e="Enter a roll number.";
+  else if(!d.course)e="Enter the course name.";
+  else if(!/^\S+@\S+\.\S+$/.test(d.email))e="Enter a valid email address.";
+  else if(!(d.age>=1&&d.age<=100))e="Enter an age between 1 and 100.";
+  else if(students.some(s=>s.roll.toLowerCase()===d.roll.toLowerCase()&&s.id!==editId))e="This roll number already exists.";
+  $("fe").textContent=e;if(e)return;
+  try{await DB.put({...d,id:editId||Date.now()});toast(editId?"Student updated":"Student added");closeAll();await reload()}
+  catch(err){$("fe").textContent=err.message||"Could not save. Please try again."}
+};
+
+$("rows").onclick=e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.e)openForm(students.find(s=>s.id==b.dataset.e));
+  if(b.dataset.d){const s=students.find(x=>x.id==b.dataset.d);delId=s.id;$("dp").textContent=`${s.name} (${s.roll}) will be removed permanently.`;$("dm").classList.add("on");$("dx").focus()}
+};
+$("dy").onclick=async()=>{
+  try{await DB.del(delId);toast("Student deleted");closeAll();await reload()}catch(err){toast("Delete failed")}
+};
+
+["q","fc","so"].forEach(i=>$(i).oninput=render);
+$("csv").onclick=()=>{
+  const rows=[["Roll","Name","Email","Course","Age"],...students.map(s=>[s.roll,s.name,s.email,s.course,s.age])];
+  const t=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const a=document.createElement("a");a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(t);a.download="students.csv";a.click();
+};
+$("theme").onclick=()=>{
+  const r=document.documentElement,dark=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);
+  r.dataset.theme=dark?"light":"dark";$("theme").textContent=dark?"Dark mode":"Light mode";
+};
+
+(async()=>{
+  $("course").innerHTML=COURSES.map(c=>`<option>${c}</option>`).join("")+"<option>Other</option>";
+  await DB.init();
+  let seeded=false;try{seeded=localStorage.getItem("sms-seeded")==="1"}catch(e){}
+  if(!DB.api&&!seeded&&!(await DB.all()).length){
+    for(const [i,s] of seed.entries())await DB.put({id:Date.now()-i*1000,name:s[0],roll:s[1],email:s[2],course:s[3],age:s[4]});
+  }
+  try{localStorage.setItem("sms-seeded","1")}catch(e){}
+  await reload();
+  $("mode").textContent=DB.api?"Connected to the shared cloud database.":"Using local browser storage.";
+})();
+</script>
+</body>
+</html>
